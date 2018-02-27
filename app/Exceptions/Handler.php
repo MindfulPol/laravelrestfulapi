@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Database\QueryException;
 
 class Handler extends ExceptionHandler
 {
@@ -48,6 +49,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        return response()->json(['error' => 'Paràmetres de la query incorrectes'], 405);
+        if ($exception instanceof QueryException) {
+            return response()->json(['error' => 'Paràmetres de la query incorrectes'], 405);
+        }
+
+        return parent::render($request, $exception);
     }
 }
